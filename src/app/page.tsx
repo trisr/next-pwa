@@ -1,6 +1,151 @@
+"use client";
+import { useEffect, useState } from 'react';
 import Image from "next/image";
 
+// const base64ToUint8Array = (base64: string): Uint8Array => {
+//   const padding = '='.repeat((4 - (base64.length % 4)) % 4);
+//   const b64 = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/');
+
+//   const rawData = window.atob(b64);
+//   const outputArray = new Uint8Array(rawData.length);
+
+//   for (let i = 0; i < rawData.length; ++i) {
+//     outputArray[i] = rawData.charCodeAt(i);
+//   }
+//   return outputArray;
+// };
+
 export default function Home() {
+  // const [isSubscribed, setIsSubscribed] = useState(false);
+  // const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+  // const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+
+  // useEffect(() => {
+  //   console.log('ini window:', window)
+  //   console.log('ini workbox:', window.workbox)
+  //   console.log('ini navigator:', navigator)
+
+  //   if (
+  //     typeof window !== 'undefined' &&
+  //     'serviceWorker' in navigator &&
+  //     window.workbox !== undefined
+  //   ) {
+  //     // run only in browser
+  //     navigator.serviceWorker.ready.then((reg) => {
+  //       console.log('waku1')
+  //       reg.pushManager.getSubscription().then((sub) => {
+  //         if (sub && !(sub.expirationTime && Date.now() > sub.expirationTime - 5 * 60 * 1000)) {
+  //           setSubscription(sub);
+  //           setIsSubscribed(true);
+  //         }
+  //       });
+  //       setRegistration(reg);
+  //     });
+  //   }
+  // }, []);
+
+  // const subscribeButtonOnClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault();
+  //   console.log('waku')
+  //   if (!registration) return;
+  //   console.log('waka')
+  //   const sub = await registration.pushManager.subscribe({
+  //     userVisibleOnly: true,
+  //     applicationServerKey: base64ToUint8Array(process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY!),
+  //   });
+  //   // TODO: you should call your API to save subscription data on server in order to send web push notification from server
+  //   setSubscription(sub);
+  //   setIsSubscribed(true);
+  //   console.log('web push subscribed!');
+  //   console.log(sub);
+  // };
+
+  // const sendNotificationButtonOnClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault();
+  //   if (!subscription) {
+  //     console.error('web push not subscribed');
+  //     return;
+  //   }
+
+  //   await fetch('/api/notification', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-type': 'application/json',
+  //     },
+  //     body: JSON.stringify({
+  //       subscription,
+  //     }),
+  //   });
+  // };
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then((registration) => {
+          console.log("Registration successful");
+        })
+        .catch((error) => {
+          console.log("Service worker registration failed");
+        });
+    }
+  }, []);
+
+  // useEffect(() => {
+  //   if ("serviceWorker" in navigator) {
+  //     // const handleServiceWorker = async (subscription: any) => {
+  //     //   const res = await fetch("http://localhost:4000/subscribe", {
+  //     //     method: "POST",
+  //     //     body: JSON.stringify(subscription),
+  //     //     headers: {
+  //     //       "content-type": "application/json",
+  //     //     },
+  //     //   });
+
+  //     //   const data = await res.json();
+  //     //   console.log(data);
+  //     // }
+  //     // navigator.serviceWorker.ready.then((swReg) => {
+  //     //   console.log('waka')
+  //     //   const options = {
+  //     //      userVisibleOnly: true,
+  //     //      applicationServerKey: process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
+  //     //      // urlB64ToUint8Array is helper function
+  //     //   }
+  //     //   swReg.pushManager.subscribe(options)
+  //     //   .then(function(subscription) {
+  //     //     handleServiceWorker(subscription)
+  //     //   })
+  //     // })
+  //     const handleServiceWorker = async () => {
+  //       // console.log('ini window:', window)
+  //       // console.log('ini navigator.serviceWorker:', navigator.serviceWorker.ready)
+  //       // console.log('ini navigator:', navigator)
+  //       const register = await navigator.serviceWorker.register("/sw.js", { scope: './'})
+  //       .catch((err) => { return console.log('[SERVICE WORKER] Registration Error:', err) });
+  //       console.log('[SERVICE WORKER] Registered. Scope:', register?.scope);
+
+  //       await navigator.serviceWorker.ready;
+  //       const subscription = await register?.pushManager.subscribe({
+  //         userVisibleOnly: true,
+  //         applicationServerKey: process.env.NEXT_PUBLIC_WEB_PUSH_PUBLIC_KEY,
+  //       });
+
+  //       const res = await fetch("http://localhost:4000/subscribe", {
+  //         method: "POST",
+  //         body: JSON.stringify(subscription),
+  //         headers: {
+  //           "content-type": "application/json",
+  //         },
+  //       });
+
+  //       const data = await res.json();
+  //       console.log(data);
+  //     };
+  //     handleServiceWorker();
+  //   }
+  // }, []);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
@@ -38,6 +183,27 @@ export default function Home() {
           priority
         />
       </div>
+
+      {/* <div className="btn-container">
+        <div>
+          <button
+            onClick={subscribeButtonOnClick}
+            disabled={isSubscribed} 
+            // className="btn-rahul"
+          >
+            Subscribe
+          </button>
+        </div>
+        <div>
+          <button
+            onClick={sendNotificationButtonOnClick}
+            disabled={!isSubscribed}
+            // className="btn-rahul"
+          >
+            Send Notification
+          </button>
+        </div>
+      </div> */}
 
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
         <a
